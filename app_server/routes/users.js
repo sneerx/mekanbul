@@ -7,7 +7,3 @@ router.get('/', function(req, res, next) {
 });
 
 module.exports = router;
-<<<<<<< HEAD
-=======
-
->>>>>>> 5765a9d (second commit)
