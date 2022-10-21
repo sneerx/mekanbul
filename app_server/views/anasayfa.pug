@@ -1,77 +1,27 @@
-extends layout 
+extends layout
+include fonksiyonlar/yildiz
 
 block content 
     #banner.page-header 
         .row 
             .col-lg-6
                 h1 
-                    | MekanBul
-                    small &nbsp; civardaki mekanlari kesfet.
+                    | #{sayfaBaslik.siteAd}
+                    small &nbsp; #{sayfaBaslik.slogan}
 
     .row
-        .row-list-group 
-        .col-xs-12.col-sm-12
-            .col-xs-12.list-group-item
-                h4 
-                    a(href='/mekan') bilgisayar müh 
-                    small &nbsp;
-                    span.glyphicon.glyphicon-star 
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star-empty
-
-
-
-                span.badge.pull-right.badge-default 1 km
-                p.address SDÜ Batı Kampüsü
-                p
-                    span.label.label-warning Mühendis Gençler 
-                    |   &nbsp;
-                    span.label.label-warning Sinan Hoca
-            |   &nbsp;
-    .row
-        .row-list-group 
-        .col-xs-12.col-sm-12
-            .col-xs-12.list-group-item
-                h4 
-                    a(href='/mekan') kütüphane
-                    small &nbsp;
-                    span.glyphicon.glyphicon-star 
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star-empty
-
-
-
-                span.badge.pull-right.badge-default 3 km
-                p.address SDÜ doğu Kampüsü
-                p
-                    span.label.label-warning kitaplar
-                    |   &nbsp;
-                    span.label.label-warning sessizlik
-            |   &nbsp;
-    .row
-        .row-list-group 
-        .col-xs-12.col-sm-12
-            .col-xs-12.list-group-item
-                h4 
-                    a(href='/mekan') antalya havalimanı
-                    small &nbsp;
-                    span.glyphicon.glyphicon-star 
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star
-                    span.glyphicon.glyphicon-star-empty
-
-
-
-                span.badge.pull-right.badge-default 100 km
-                p.address antalya
-                p
-                    span.label.label-warning seyahat
-                    |   &nbsp;
-                    span.label.label-warning yurtdışı
-
-    
+        each mekan in mekanlar 
+            .row-list-group 
+            .col-xs-12.col-sm-12
+                .col-xs-12.list-group-item
+                    h4
+                        a(href='/mekan') #{mekan.ad}
+                        small &nbsp;
+                        +puanOlustur(mekan.puan)
+                        
+                    span.badge.pull-right.badge-default #{mekan.mesafe}
+                    p.address #{mekan.adres}
+                    p
+                        each imkan in mekan.imkanlar
+                            span.label.label-warning #{imkan}
+                            |   &nbsp;

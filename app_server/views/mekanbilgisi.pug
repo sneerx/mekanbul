@@ -1,46 +1,43 @@
-extends layout 
+extends layout
+include fonksiyonlar/yildiz
 
 block content 
     .row.page-header
         .col-lg-12
-            h1 Starbucks 
+            h1 #{mekanBaslik} 
     .row
         .col-xs-12.col-md-12 
             .row
                 .col-xs-12.col-sm-6 
                     p.rating
-                        span.glyphicon.glyphicon-star 
-                        span.glyphicon.glyphicon-star 
-                        span.glyphicon.glyphicon-star 
-                        span.glyphicon.glyphicon-star 
-                        span.glyphicon.glyphicon-star-empty 
-                    p Centrum garden avm 
+                        +puanOlustur(mekanDetay.puan)
+                    p= mekanDetay.adres
                     .panel.panel-primary 
                         .panel-heading 
                             h2.panel-title Açılış Saatleri
                         .panel-body
-                            p 
-                                | pazartesi-cuma 7:00-23:00
-                            p 
-                                | cumartesi-pazar : 9:00-22:00
+                        each saat in mekanDetay.saatler
+                            p
+                                | #{saat.gunler}:&nbsp;
+                                if (saat.kapali)
+                                    | Kapali
+                                else 
+                                    | #{saat.acilis} - #{saat.kapanis}
                     .panel.panel-primary 
                         .panel-heading 
                             h2.panel-title Neler var ?
 
                         .panel-body
-                            span.label.label-warning Dünya kahveleri 
-                            |   &nbsp;
-                            span.label.label-warning Kekler 
-                            |   &nbsp;
-                            span.label.label-warning Pastalar
-                            |   &nbsp;
+                            each imkan in mekanDetay.imkanlar
+                                span.label.label-warning= imkan
+                                |   &nbsp;
                 .col-xs-12.col-sm-6 
                     .panel.panel-primary 
                         .panel-heading
                             h2.panel-title konum bilgisi 
                         .panel-body 
-                            -var enlem=37.78
-                            -var boylam=30.56
+                            -var enlem=mekanDetay.koordinatlar.enlem 
+                            -var boylam=mekanDetay.koordinatlar.boylam
                              img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center='+enlem+','+boylam+'&zoom=12&size=600x400&markers='+enlem+','+boylam+'&key=AIzaSyCmmKygTpBzHGOZEciJpAdxC9v_tWHagnE')
     .row 
         .col-xs-12 
@@ -48,19 +45,16 @@ block content
                 .panel-heading 
                     a.btn.btn-default.pull-right(href='/mekan/yorum/yeni') Yorum Ekle 
                     h2.panel-title müsteri yorumları
-                .panel-body.review-container 
-                    .row 
-                        .review 
-                            .well.well-sm.review-header 
-                                span.rating 
-                                span.glyphicon.glyphicon-star
-                                span.glyphicon.glyphicon-star
-                                span.glyphicon.glyphicon-star
-                                span.glyphicon.glyphicon-star
-                                span.glyphicon.glyphicon-star-empty 
-                                span.review-author Rıza ER 
-                                small.reviewTimestamp &nbsp; 13 Ekim 2022
-                            .col-xs-12 
-                                p Kahveler güzel 
+                .panel-body.review-container
+                    each yorum in mekanDetay.yorumlar 
+                        .row 
+                            .review 
+                                .well.well-sm.review-header 
+                                    span.rating
+                                        +puanOlustur(yorum.puan)
+                                    span.review-author=yorum.yorumYapan
+                                    small.reviewTimestamp &nbsp; #{yorum.tarih}
+                                .col-xs-12 
+                                    p= yorum.yorumMetni
 
 
