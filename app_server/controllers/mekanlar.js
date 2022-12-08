@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const axios = require("axios");
 var apiSecenekleri= {
+    
     sunucu:"https://mekanbul.rizaer.repl.co",
     apiYolu:"/api/mekanlar/",
 
@@ -102,6 +103,7 @@ const mekanBilgisi = function(req, res){
     axios
         .get(apiSecenekleri.sunucu + apiSecenekleri.apiYolu + req.params.mekanid)
         .then(function(response){
+            req.session.mekanAdi = response.data.ad;
             detaySayfasiOlustur(res, response.data);
 
         })
@@ -110,14 +112,45 @@ const mekanBilgisi = function(req, res){
         });
 };
 
-const yorumEkle = function(req, res, next) {
-    res.render('yorumekle', { title: 'Yorum ekle' });
+const yorumEkle = function(req, res) {
+    var mekanAdi = req.session.mekanAdi;
+    mekanid = req.params.mekanid;
+    if(!mekanAdi)
+    res.redirect("/mekan/"+ mekanid);
+    else res.render("yorumekle",{
+        baslik: mekanAdi + " mekanına yorum ekle"});
 };
 
+const yorumumuEkle=function(req,res) {
+    var gonderilenYorum, mekanid;
+    mekanid = req.params.mekanid;
+    
+
+    if(!req.body.adsoyad || !req.body.yorum){
+        res.redirect("/mekan/"+ mekanid + "/yorum/yeni?hata=evet");
+
+    }else{
+        gonderilenYorum = {
+            yorumYapan: req.body.adsoyad,
+            puan: parseInt(req.body.puan, 10),
+            yorumMetni: req.body.yorum,
+
+        };
+        axios
+            .post(apiSecenekleri.sunucu + apiSecenekleri.apiYolu+mekanid+"/yorumlar",gonderilenYorum)
+            .then(function(){
+                res.redirect("/mekan/" + mekanid);
+            })
+            .catch(function(hata){
+                hataGoster(req,res,hata);
+            });
+    }
+};
 
 
 module.exports={
     anaSayfa,
     mekanBilgisi,
-    yorumEkle
+    yorumEkle,
+    yorumumuEkle
 }
